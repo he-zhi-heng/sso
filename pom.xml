@@ -13,7 +13,7 @@
     <artifactId>sso</artifactId>
     <version>1.0.0</version>
 
-    <name>sso单点登录</name>
+    <name>sso</name>
     <description>sso单点登录</description>
 
     <properties>

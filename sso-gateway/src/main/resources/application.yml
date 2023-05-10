@@ -13,7 +13,7 @@ spring:
   main:
     web-application-type: reactive
 server:
-  port: 10001
+  port: 10000
 
 my:
   server:

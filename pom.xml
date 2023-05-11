@@ -209,6 +209,7 @@
     <modules>
         <module>sso-gateway</module>
         <module>apitest</module>
+        <module>commons</module>
     </modules>
 
     <build>

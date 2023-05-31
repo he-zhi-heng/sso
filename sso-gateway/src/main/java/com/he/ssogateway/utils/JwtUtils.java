@@ -9,17 +9,22 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author hemore
  */
 @Slf4j
+@Component
 public class JwtUtils {
     /**
      * 自定义载荷的key值
@@ -35,6 +40,15 @@ public class JwtUtils {
     private String secret;
     @Value("${jwt.expiration}")
     private Long expiration;
+    @Value("${jwt.tokenHeader}")
+    private String tokenHeader;
+
+    final RedisUtils redisUtils;
+
+    public JwtUtils(RedisUtils redisUtils) {
+        this.redisUtils = redisUtils;
+    }
+
 
     /**
      * JWT工具生成Token active=true
@@ -49,6 +63,7 @@ public class JwtUtils {
                 .signWith(SignatureAlgorithm.HS512, secret)
                 .compact();
         log.info("根据载荷，hash算法，和密码生成有效Token：{}", token);
+        redisUtils.setCacheObject("jwt"+token,token,1, TimeUnit.HOURS);
         return token;
     }
 
@@ -85,6 +100,10 @@ public class JwtUtils {
     public String getUserNameFromToken(String token) {
         AuthenticationInfo userInfo = getUserInfo(token);
         return userInfo.getUsername();
+    }
+
+    public String getRequestToken(HttpServletRequest request){
+        return request.getHeader(tokenHeader);
     }
 
     /**

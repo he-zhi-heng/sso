@@ -12,6 +12,11 @@ spring:
           enabled: true
   main:
     web-application-type: reactive
+    allow-bean-definition-overriding: true
+  security:
+    user:
+      name: user
+      password: test
 server:
   port: 10000
 

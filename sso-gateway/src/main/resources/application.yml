@@ -12,28 +12,9 @@ spring:
           enabled: true
   main:
     web-application-type: reactive
-    allow-bean-definition-overriding: true
-  security:
-    user:
-      name: user
-      password: test
 server:
-  port: 10000
+  port: 10001
 
 my:
   server:
     addr: 150.158.5.120
-
-logging:
-  config: classpath:logback-spring.xml
-  level:
-    root: info
-#jwt
-jwt:
-  # JWT存储的请求头
-  tokenHeader: Authorization
-  # JWT加解密使用的密钥
-  secret: mySecret
-  # JWT的超期限时间(60*60*24)
-  expiration: 604800
-  tokenHead: Bearer

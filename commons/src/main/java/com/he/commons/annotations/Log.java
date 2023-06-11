@@ -1,2 +1,9 @@
-package com.he.commons.annotations;public @interface Log {
+package com.he.commons.annotations;
+
+/**
+ * @author hemoren
+ */
+public @interface Log {
+    String methodName() default "";
+
 }

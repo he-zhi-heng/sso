@@ -1,5 +1,8 @@
 package com.he.ssogateway.server.impl;
 
+import com.github.pagehelper.PageInfo;
+import com.he.commons.result.JsonPage;
+import com.he.commons.result.JsonResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -27,5 +30,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 .authorities(new ArrayList<>())
                 .build();
 
+    }
+
+    public JsonResult<String> a(String username) throws UsernameNotFoundException {
+        return JsonResult.ok();
     }
 }

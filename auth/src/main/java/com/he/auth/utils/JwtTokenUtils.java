@@ -1,6 +1,15 @@
 package com.he.auth.utils;
 
 import com.alibaba.fastjson.JSON;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.he.auth.excption.AuthException;
+import com.he.auth.pojo.entity.AuthenticationInfo;
+import com.he.commons.enums.StateCode;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -137,7 +146,7 @@ public class JwtTokenUtils {
     @Deprecated
     public boolean validateToken(String token, UserDetails userDetails) {
         String username = getUserNameFromToken(token);
-        boolean result = username.equals(userDetails.getUsername()) && !isTokenExpired(token);
+        boolean result = username.equals(userDetails.getUsername()) && isTokenExpired(token);
         log.info("验证Token是否有效：{}", result);
         return result;
     }
@@ -150,7 +159,7 @@ public class JwtTokenUtils {
         Date expiredDate = getExpiredDateFromToken(token);
         boolean result = expiredDate.before(new Date());
         log.info("验证token是否超时过期，超时时间：{}，是否过期：{}", expiredDate, result);
-        return result;
+        return !result;
     }
 
     /**
@@ -174,7 +183,7 @@ public class JwtTokenUtils {
             log.info("将用户信息转化成json字符串出现错误,错误信息:{}", e.getMessage());
         }
         if (userInfo == null) {
-            throw new ServiceException(ResponseCode.INTERNAL_SERVER_ERROR, "无法转化认证用户信息json");
+            throw new AuthException(StateCode.ERR_JWT_EXPIRED, "无法转化认证用户信息json");
         }
         claims.put(CLAIM_KEY_USERNAME, userInfoJson);
         return generateToken(claims);
@@ -185,7 +194,7 @@ public class JwtTokenUtils {
      */
     @Deprecated
     public boolean canRefresh(String token) {
-        return !isTokenExpired(token);
+        return isTokenExpired(token);
     }
 
     /**

@@ -1,10 +1,10 @@
-package com.he.commons;
+package com.he.jwt.service;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class CommonsApplicationTests {
+class JwtServiceApplicationTests {
 
     @Test
     void contextLoads() {

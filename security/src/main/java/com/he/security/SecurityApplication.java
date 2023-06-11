@@ -1,13 +1,13 @@
-package com.he.commons;
+package com.he.security;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class CommonsApplication {
+public class SecurityApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(CommonsApplication.class, args);
+        SpringApplication.run(SecurityApplication.class, args);
     }
 
 }

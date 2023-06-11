@@ -16,6 +16,20 @@
     <name>sso</name>
     <description>sso单点登录</description>
 
+
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>commons</module>
+        <module>auth</module>
+        <module>security</module>
+        <module>user</module>
+
+        <module>sso-gateway</module>
+        <module>apitest</module>
+        <module>jwt-service</module>
+    </modules>
+
     <properties>
         <java.version>1.8</java.version>
         <java.version>1.8</java.version>
@@ -28,10 +42,10 @@
         <spring-security-jwt.version>1.0.10.RELEASE</spring-security-jwt.version>
         <mybatis-spring-boot.version>2.2.0</mybatis-spring-boot.version>
         <pagehelper-spring-boot.version>1.4.0</pagehelper-spring-boot.version>
-        <mysql.version>8.0.26</mysql.version>
+        <mysql.version>8.0.30</mysql.version>
         <lombok.version>1.18.20</lombok.version>
         <knife4j-spring-boot.version>2.0.9</knife4j-spring-boot.version>
-        <fastjson.version>1.2.45</fastjson.version>
+        <fastjson.version>2.0.32</fastjson.version>
         <druid.version>1.1.20</druid.version>
         <jjwt.version>0.9.0</jjwt.version>
         <seata-server.version>1.4.2</seata-server.version>
@@ -39,7 +53,8 @@
         <javax-servlet.version>4.0.1</javax-servlet.version>
         <redis.version>4.3.1</redis.version>
         <tencent-cloud.version>3.1.726</tencent-cloud.version>
-        <project.version>1.0.0-SNAPSHOT</project.version>
+        <hutool.version>5.8.16</hutool.version>
+        <project.version>1.0.0</project.version>
     </properties>
 
     <dependencyManagement>
@@ -87,6 +102,24 @@
                 <groupId>com.github.pagehelper</groupId>
                 <artifactId>pagehelper-spring-boot-starter</artifactId>
                 <version>${pagehelper-spring-boot.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.mybatis.spring.boot</groupId>
+                        <artifactId>mybatis-spring-boot-starter</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.mybatis.spring.boot</groupId>
+                        <artifactId>mybatis-spring-boot-autoconfigure</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>com.github.pagehelper</groupId>
+                        <artifactId>pagehelper-spring-boot-autoconfigure</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework.boot</groupId>
+                        <artifactId>spring-boot-starter</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-aop -->
@@ -112,7 +145,19 @@
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-security</artifactId>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.springframework.boot</groupId>
+                        <artifactId>spring-boot-starter</artifactId>
+                    </exclusion>
+                </exclusions>
                 <version>${spring-boot.version}</version>
+            </dependency>
+            <!-- Spring Security JWT -->
+            <dependency>
+                <groupId>org.springframework.security</groupId>
+                <artifactId>spring-security-jwt</artifactId>
+                <version>${spring-security-jwt.version}</version>
             </dependency>
             <!-- Spring Boot Oauth2：认证授权 -->
             <dependency>
@@ -125,12 +170,6 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-configuration-processor</artifactId>
                 <version>${spring-boot-configuration-processor.version}</version>
-            </dependency>
-            <!-- Spring Security JWT -->
-            <dependency>
-                <groupId>org.springframework.security</groupId>
-                <artifactId>spring-security-jwt</artifactId>
-                <version>${spring-security-jwt.version}</version>
             </dependency>
             <!-- Spring Boot Data Redis：缓存 -->
             <dependency>
@@ -201,16 +240,24 @@
                 <artifactId>javax.servlet-api</artifactId>
                 <version>${javax-servlet.version}</version>
             </dependency>
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-all</artifactId>
+                <version>${hutool.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.he</groupId>
+                <artifactId>commons</artifactId>
+                <version>${project.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.springframework.boot</groupId>
+                        <artifactId>spring-boot-starter</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
         </dependencies>
     </dependencyManagement>
-
-    <packaging>pom</packaging>
-
-    <modules>
-        <module>sso-gateway</module>
-        <module>apitest</module>
-        <module>commons</module>
-    </modules>
 
     <build>
         <plugins>

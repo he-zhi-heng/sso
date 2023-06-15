@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>2.7.6</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <relativePath /> <!-- lookup parent from repository -->
     </parent>
 
     <groupId>com.he</groupId>
@@ -24,7 +25,9 @@
         <module>auth</module>
         <module>security</module>
         <module>user</module>
+        <module>notify</module>
 
+        <module>demo</module>
         <module>sso-gateway</module>
         <module>apitest</module>
         <module>jwt-service</module>
@@ -290,5 +293,45 @@
             </plugin>
         </plugins>
     </build>
+    <repositories>
+        <repository>
+            <id>maven-public</id>
+            <name>Nexus Repository</name>
+            <url>http://43.138.114.69:8081/repository/maven-public/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
+    </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>maven-public</id>
+            <name>Nexus Plugin Repository</name>
+            <url>http://43.138.114.69:8081/repository/maven-public/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </pluginRepository>
+    </pluginRepositories>
+    <!--项目分发信息，在执行mvn
+    deploy后表示要发布的位置。有了这些信息就可以把网站部署到远程服务器或者把构件jar等部署到远程仓库。 -->
+    <distributionManagement>
+        <repository><!--部署项目产生的构件到远程仓库需要的信息 -->
+            <id>maven-releases</id><!-- 此处id和settings.xml的id保持一致 -->
+            <name>Nexus Release Repository</name>
+            <url>http://43.138.114.69:8081/repository/maven-releases/</url>
+        </repository>
+        <snapshotRepository><!--构件的快照部署到哪里？如果没有配置该元素，默认部署到repository元素配置的仓库，参见distributionManagement/repository元素 -->
+            <id>maven-snapshots</id><!-- 此处id和settings.xml的id保持一致 -->
+            <name>Nexus Snapshot Repository</name>
+            <url>http://43.138.114.69:8081/repository/maven-snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
 
 </project>

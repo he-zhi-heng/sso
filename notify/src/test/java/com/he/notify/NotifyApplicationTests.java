@@ -1,13 +1,13 @@
-package com.he.jwt.service;
+package com.he.notify;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class JwtServiceApplicationTests {
+class NotifyApplicationTests {
 
-    @Test
-    void contextLoads() {
-    }
+	@Test
+	void contextLoads() {
+	}
 
 }

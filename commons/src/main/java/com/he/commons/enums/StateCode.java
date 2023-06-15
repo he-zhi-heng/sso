@@ -39,11 +39,19 @@ public enum StateCode {
      *  jwt
      */
     ERR_JWT_EXPIRED(40005),
+    /**
+     * JWT 格式不正确
+     */
+    ERR_JWT_MALFORMED(40006), 
+    /**
+     * JWT 签名错误
+     */
+    ERR_JWT_SIGNATURE(40007), 
 
     /**
      * 服务器异常
      */
-    SERVER_ERROR(50000), ;
+    SERVER_ERROR(50000);
 
     private final Integer value;
 

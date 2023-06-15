@@ -2,7 +2,6 @@ package com.he.commons.result;
 
 import com.github.pagehelper.PageInfo;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
 import java.util.List;

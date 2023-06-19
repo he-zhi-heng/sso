@@ -1,19 +1,20 @@
 package com.he.auth.filter;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.alibaba.fastjson.JSON;
+import com.he.auth.pojo.entity.AuthenticationInfo;
+import com.he.auth.utils.JwtTokenUtils;
 import com.he.commons.enums.StateCode;
 import com.he.commons.result.JsonResult;
 
-import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureException;
 
@@ -22,16 +23,21 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.List;
+import java.util.Collection;
 
 /**
  * @author hemoren
- */
+ * Jwt过滤器,对请求头中的jwt进行验证
+ */ 
 public class JwtAuthFilter extends OncePerRequestFilter {
-    /**
-     * JWT数据的密钥
-     */
-    private String secretKey = "fgfdsfadsfadsafdsafdsfadsfadsfdsafdasfdsafdsafdsafds4rttrefds";
+
+    @Value("${jwt.tokenHeader}")
+    private String header;
+
+    private JwtTokenUtils jwtTokenUtils;
+    public JwtAuthFilter(JwtTokenUtils jwtTokenUtils) {
+        this.jwtTokenUtils = jwtTokenUtils;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -43,7 +49,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         SecurityContextHolder.clearContext();
         // 客户端提交请求时，必须在请求头的Authorization中添加JWT数据，这是当前服务器程序的规定，客户端必须遵守
         // 尝试获取JWT数据
-        String jwt = request.getHeader("Authorization");
+        String jwt = request.getHeader(header);
         System.out.println("从请求头中获取到的JWT=" + jwt);
         // 判断是否不存在jwt数据
         if (!StringUtils.hasText(jwt)) {
@@ -53,60 +59,59 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response); // 继续执行过滤器链中后续的过滤器
             return; // 必须
         }
-
         // 注意：此时执行时，如果请求头中携带了Authentication，日志中将输出，且不会有任何响应，因为当前过滤器尚未放行
         // 以下代码有可能抛出异常的
-        // TODO 密钥和各个Key应该统一定义
         String username = null;
-        String permissionsString = null;
+        AuthenticationInfo user = null;
+        Collection<GrantedAuthority> permissions = null;
         try {
             System.out.println("请求头中包含JWT，准备解析此数据……");
-            Claims claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(jwt).getBody();
-            username = claims.get("username").toString();
-            permissionsString = claims.get("permissions").toString();
-            System.out.println("username=" + username);
-            System.out.println("permissionsString=" + permissionsString);
-        } catch (ExpiredJwtException e) {
-            System.out.println("解析JWT失败，此JWT已过期：" + e.getMessage());
-            JsonResult<Void> jsonResult = JsonResult.failed(
-                    StateCode.ERR_JWT_EXPIRED, "您的登录已过期，请重新登录！");
-            String jsonString = JSON.toJSONString(jsonResult);
-            System.out.println("响应结果：" + jsonString);
-            response.setContentType("application/json; charset=utf-8");
-            response.getWriter().println(jsonString);
-            return;
-        } catch (MalformedJwtException e) {
-            System.out.println("解析JWT失败，此JWT数据错误，无法解析：" + e.getMessage());
-            JsonResult<Void> jsonResult = JsonResult.failed(StateCode.ERR_JWT_MALFORMED, "获取登录信息失败，请重新登录！");
-            String jsonString = JSON.toJSONString(jsonResult);
-            System.out.println("响应结果：" + jsonString);
-            response.setContentType("application/json; charset=utf-8");
-            response.getWriter().println(jsonString);
-            return;
-        } catch (SignatureException e) {
-            System.out.println("解析JWT失败，此JWT签名错误：" + e.getMessage());
-            JsonResult<Void> jsonResult = JsonResult.failed(
-                    StateCode.ERR_JWT_SIGNATURE, "获取登录信息失败，请重新登录！");
-            String jsonString = JSON.toJSONString(jsonResult);
-            System.out.println("响应结果：" + jsonString);
-            response.setContentType("application/json; charset=utf-8");
-            response.getWriter().println(jsonString);
-            return;
+            if (!ObjectUtils.isEmpty(jwt)) {
+                try {
+                    user = jwtTokenUtils.getUserInfo(jwt);
+                    username = user.getUsername();
+                    permissions = user.getAuthorities();
+                    System.out.println("username=" + username);
+                    System.out.println("permissionsString=" + permissions);
+                } catch (ExpiredJwtException e) {
+                    System.out.println("解析JWT失败，此JWT已过期：" + e.getMessage());
+                    response.setContentType("application/json; charset=utf-8");
+                    response.getWriter().println(JsonResult.failed(StateCode.ERR_JWT_EXPIRED, "您的登录已过期，请重新登录！"));
+                    return;
+                } catch (MalformedJwtException e) {
+                    System.out.println("解析JWT失败，此JWT数据错误，无法解析：" + e.getMessage());
+                    response.setContentType("application/json; charset=utf-8");
+                    response.getWriter().println(JsonResult.failed(StateCode.ERR_JWT_MALFORMED, "获取登录信息失败，请重新登录！"));
+                    return;
+                } catch (SignatureException e) {
+                    System.out.println("解析JWT失败，此JWT签名错误：" + e.getMessage());
+                    response.setContentType("application/json; charset=utf-8");
+                    response.getWriter().println(JsonResult.failed(StateCode.ERR_JWT_SIGNATURE, "获取登录信息失败，请重新登录！"));
+                    return;
+                } catch (Throwable e) {
+                    System.out.println("解析JWT失败，异常类型：" + e.getClass().getName());
+                    e.printStackTrace();
+                    response.setContentType("application/json; charset=utf-8");
+                    response.getWriter().println(JsonResult.failed(StateCode.SERVER_ERROR, "获取登录信息失败，请重新登录！"));
+                    return;
+                }
+            } else {
+                response.setContentType("application/json; charset=utf-8");
+                response.getWriter().println(JsonResult.failed(StateCode.UNAUTHORIZED, "请求未包含JWT数据！"));
+                return;
+            }
         } catch (Throwable e) {
             System.out.println("解析JWT失败，异常类型：" + e.getClass().getName());
             e.printStackTrace();
-            JsonResult<Void> jsonResult = JsonResult.failed(
-                    StateCode.SERVER_ERROR, "获取登录信息失败，请重新登录！");
-            String jsonString = JSON.toJSONString(jsonResult);
-            System.out.println("响应结果：" + jsonString);
             response.setContentType("application/json; charset=utf-8");
-            response.getWriter().println(jsonString);
+            response.getWriter().println(JsonResult.failed(StateCode.SERVER_ERROR, "解析JWT失败，请重新登录！"));
             return;
         }
 
         // 将此前从JWT中读取到的permissionsString（JSON字符串）转换成Collection<? extends
         // GrantedAuthority>
-        List<SimpleGrantedAuthority> permissions = JSON.parseArray(permissionsString, SimpleGrantedAuthority.class);
+        // List<SimpleGrantedAuthority> permissions = JSON.parseArray(permissionsString,
+        // SimpleGrantedAuthority.class);
         System.out.println("从JWT中获取到的权限转换成Spring Security要求的类型：" + permissions);
         // 将解析得到的用户信息传递给Spring Security
         // 获取Spring Security的上下文，并将Authentication放到上下文中

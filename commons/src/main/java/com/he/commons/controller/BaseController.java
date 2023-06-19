@@ -4,8 +4,8 @@ import org.springframework.context.annotation.Import;
 
 import com.he.commons.exception.BaseException;
 import com.he.commons.result.JsonResult;
+import com.he.commons.service.BaseServer;
 import com.he.commons.utils.SpringContextUtil;
-import com.service.BaseServer;
 
 @Import(SpringContextUtil.class)
 public class BaseController {

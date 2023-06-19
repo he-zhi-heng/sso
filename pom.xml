@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>2.7.6</version>
-        <relativePath /> <!-- lookup parent from repository -->
+        <relativePath />
+        <!-- lookup parent from repository -->
     </parent>
 
     <groupId>com.he</groupId>
@@ -26,11 +26,7 @@
         <module>security</module>
         <module>user</module>
         <module>notify</module>
-
-        <module>demo</module>
-        <module>sso-gateway</module>
-        <module>apitest</module>
-        <module>jwt-service</module>
+        <module>pojo</module>
     </modules>
 
     <properties>
@@ -100,6 +96,33 @@
                 <artifactId>mybatis-spring-boot-starter</artifactId>
                 <version>${mybatis-spring-boot.version}</version>
             </dependency>
+
+            <!--        这个是生成数据库表的核心依赖-->
+            <dependency>
+                <groupId>com.gitee.sunchenbin.mybatis.actable</groupId>
+                <artifactId>mybatis-enhance-actable</artifactId>
+                <version>1.0.1</version>
+            </dependency>
+
+            <!--以下两个类需要加入，否则报错无法注入-->
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>3.4</version>
+            </dependency>
+            <dependency>
+                <groupId>net.sf.json-lib</groupId>
+                <artifactId>json-lib</artifactId>
+                <version>2.4</version>
+                <classifier>jdk15</classifier>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>commons-logging</artifactId>
+                        <groupId>commons-logging</groupId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
             <!-- PageHelper Spring Boot：MyBatis分页 -->
             <dependency>
                 <groupId>com.github.pagehelper</groupId>
@@ -322,13 +345,13 @@
     <!--项目分发信息，在执行mvn
     deploy后表示要发布的位置。有了这些信息就可以把网站部署到远程服务器或者把构件jar等部署到远程仓库。 -->
     <distributionManagement>
-        <repository><!--部署项目产生的构件到远程仓库需要的信息 -->
-            <id>maven-releases</id><!-- 此处id和settings.xml的id保持一致 -->
+        <repository>            <!--部署项目产生的构件到远程仓库需要的信息 -->
+            <id>maven-releases</id>            <!-- 此处id和settings.xml的id保持一致 -->
             <name>Nexus Release Repository</name>
             <url>http://43.138.114.69:8081/repository/maven-releases/</url>
         </repository>
-        <snapshotRepository><!--构件的快照部署到哪里？如果没有配置该元素，默认部署到repository元素配置的仓库，参见distributionManagement/repository元素 -->
-            <id>maven-snapshots</id><!-- 此处id和settings.xml的id保持一致 -->
+        <snapshotRepository>            <!--构件的快照部署到哪里？如果没有配置该元素，默认部署到repository元素配置的仓库，参见distributionManagement/repository元素 -->
+            <id>maven-snapshots</id>            <!-- 此处id和settings.xml的id保持一致 -->
             <name>Nexus Snapshot Repository</name>
             <url>http://43.138.114.69:8081/repository/maven-snapshots/</url>
         </snapshotRepository>

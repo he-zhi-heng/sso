@@ -1,0 +1,39 @@
+my:
+  server:
+    addr: 150.158.5.120
+#    addr: localhost
+spring:
+  jackson:
+    default-property-inclusion: always
+  servlet:
+    multipart:
+      max-file-size: 100MB  # 上传文件大小限制
+      max-request-size: 100MB # 上传请求大小限制
+  #      location:  # 上传文件临时目录
+  #      file-size-threshold:  # 上传文件大小阈值
+  #      enabled: true # 是否开启上传文件
+  #      resolve-lazily: false # 是否开启延迟加载
+  datasource:
+    url: jdbc:mysql:// ${my.server.addr}:3306/myicloud?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+    username: root
+    password: hemouren123!
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+mybatis:
+  mapper-locations:
+    - classpath:mapper/*.xml # mybatis mapper文件路径
+  configuration:
+    cache-enabled: false  # 是否开启二级缓存
+    local-cache-scope: statement #一级缓存指定为statement级别
+    map-underscore-to-camel-case: true # 开启驼峰命名
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl # 日志输出
+#用于生成数据库表的mybatis配置
+#当mybatis.table.auto=create时，系统启动后，会将所有的表删除掉，然后根据model中配置的结构重新建表，该操作会破坏原有数据。
+#当mybatis.table.auto=update时，系统会自动判断哪些表是新建的，哪些字段要修改类型等，哪些字段要删除，哪些字段要新增，该操作不会破坏原有数据。
+#当mybatis.table.auto=none时，系统不做任何处理。
+  table: 
+    auto: update
+  model: 
+    pack: com.zheng.blog.po
+  database: 
+    type: mysql

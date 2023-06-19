@@ -47,6 +47,11 @@ public enum StateCode {
      * JWT 签名错误
      */
     ERR_JWT_SIGNATURE(40007), 
+    /**
+     * 未包含JWT数据
+     */
+    UNAUTHORIZED(40008), 
+    
 
     /**
      * 服务器异常

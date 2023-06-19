@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.he.userwebapi.mapper.UserMapper">
+
+
+    <!-- save -->
+    <insert id="save">
+    insert into auth_user(id,username,password)
+    value (#{id},#{username},#{password});
+    </insert>
+
+    <!-- getUserInfoByUsername -->
+    <select id="getUserInfoByUsername">
+     select username, password from 
+    auth_user where username = #{username};
+    </select>
+
+
+</mapper>

@@ -1,11 +1,11 @@
-package com.he.pojo.vo;
+package com.he.pojo.dto;
 
 import java.io.Serializable;
 
 import lombok.Data;
 
 @Data
-public class LoginUserVO implements Serializable{
+public class LoginUserDTO implements Serializable{
     String username;
     String password;
 }

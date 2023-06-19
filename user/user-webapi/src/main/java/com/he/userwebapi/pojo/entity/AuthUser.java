@@ -14,13 +14,19 @@ public class AuthUser implements Serializable {
     /**
      * 用户id
      */
-    @Column(name = "id",type = MySqlTypeConstant.BIGINT,isKey = true)
+    @Column(name = "id", type = MySqlTypeConstant.BIGINT, isKey = true)
     Long id;
 
     /**
      * 用户名
      */
-    @Column(name = "username",type = MySqlTypeConstant.VARCHAR,length = 25,isNull = false)
+    @Column(name = "username", type = MySqlTypeConstant.VARCHAR, length = 25, isNull = false)
     String username;
+
+    /**
+     * 密码
+     */
+    @Column(name = "password", type = MySqlTypeConstant.VARCHAR, length = 25, isNull = false)
+    String password;
 
 }
